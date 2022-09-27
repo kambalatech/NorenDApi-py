@@ -16,29 +16,20 @@ to build this package and install it on your server please use
 ```NorenApi```
 - [login](#md-login)
 - [logout](#md-logout)
+- [get_clients](#md-get_clients)
 
 Symbols
 - [searchscrip](#md-searchscrip)
 - [get_security_info](#md-get_security_info)
 - [get_quotes](#md-get_quotes)
-- [get_time_price_series](#md-get_time_price_series)
-- [get_daily_price_series](#md-get_daily_price_series)
-- [get_option_chain](#md-get_optionchain)
 
 Orders and Trades
 - [place_order](#md-place_order)
 - [modify_order](#md-modify_order)
 - [cancel_order](#md-cancel_order)
 - [exit_order](#md-exit_order)
-- [product_convertion](#md-prd_convert)
 - [get_orderbook](#md-get_orderbook)
 - [get_tradebook](#md-get_tradebook)
-- [get_singleorderhistory](#md-get_singleorderhistory)
-
-Holdings and Limits
-- [get_holdings](#md-get_holdings)
-- [get_positions](#md-get_positions)
-- [get_limits](#md-get_limits)
 
 Websocket API
 - [start_websocket](#md-start_websocket)
