@@ -66,10 +66,7 @@ if ret != None:
         print('p => place order')
         print('m => modify order')
         print('c => cancel order')
-        print('y => order history')
         print('o => get order book')
-        print('h => get holdings')
-        print('l => get limits')
         print('k => get positions')
         print('d => get daily mtm')
         print('s => start_websocket')
@@ -94,27 +91,15 @@ if ret != None:
             orderno=input('Enter orderno:').lower()        
             ret = api.cancel_order(orderno=orderno)
             print(ret)
-
-        elif prompt1 == 'y':
-            orderno=input('Enter orderno:').lower()        
-            ret = api.single_order_history(orderno=orderno)
-            print(ret)
             
         elif prompt1 == 'o':            
             ret = api.get_order_book()
             print(ret)
 
-        elif prompt1 == 'h':            
-            ret = api.get_holdings()
-            print(ret)
-
-        elif prompt1 == 'l':            
-            ret = api.get_limits()
-            print(ret)
-
         elif prompt1 == 'k':            
             ret = api.get_positions()
             print(ret)
+
         elif prompt1 == 'd':                        
             while True:
                 ret = api.get_positions()
@@ -125,6 +110,7 @@ if ret != None:
                     pnl += float(i['rpnl'])
                     day_m2m = mtm + pnl
                 print(day_m2m)
+
         elif prompt1 == 's':
             if socket_opened == True:
                 print('websocket already opened')
