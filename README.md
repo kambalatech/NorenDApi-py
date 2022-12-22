@@ -16,12 +16,11 @@ to build this package and install it on your server please use
 ```NorenApi```
 - [login](#md-login)
 - [logout](#md-logout)
-- [get_clients](#md-get_clients)
 
 Symbols
-- [searchscrip](#md-searchscrip)
 - [get_security_info](#md-get_security_info)
 - [get_quotes](#md-get_quotes)
+- [get_clients](#md-get_clients)
 
 Orders and Trades
 - [place_order](#md-place_order)
@@ -31,10 +30,8 @@ Orders and Trades
 - [get_orderbook](#md-get_orderbook)
 - [get_tradebook](#md-get_tradebook)
 
-Websocket API
-- [start_websocket](#md-start_websocket)
-- [subscribe](#md-subscribe)
-- [unsubscribe](#md-unsubscribe)
+Holdings and Limits
+- [get_positions](#md-get_positions)
 
 Example
 - [getting started](#md-example-basic)
@@ -330,55 +327,6 @@ Response data will be in json format with below fields.
 |emsg||This will be present only if Order cancelation fails|
 
 
-#### <a name="md-prd_convert"></a> position_product_conversion(exchange, tradingsymbol, quantity, new_product_type, previous_product_type, buy_or_sell, day_or_cf)
-
-Convert a product of a position 
-
-Example:
-
-```
-ret = api.get_positions()
-#converts the first position from existing product to intraday
-p = ret[0]
-ret = api.position_product_conversion(p['exch'], p['tsym'], p['netqty'], 'I', p['prd'], 'B', 'DAY')
-```
-
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|exch*||Exchange|
-|tsym*||Unique id of contract on which order was placed. Can’t be modified, must be the same as that of original order. (use url encoding to avoid special char error for symbols like M&M)|
-|qty*||Quantity to be converted.|
-|uid*||User id of the logged in user.|
-|actid*||Account id|
-|prd*||Product to which the user wants to convert position. |
-|prevprd*||Original product of the position.|
-|trantype*||Transaction type|
-|postype*|Day / CF|Converting Day or Carry forward position|
-|ordersource|MOB |For Logging|
-
-Response Details :
-
-Response data will be in json format with below fields.
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Position conversion success or failure indication.|
-|emsg||This will be present only if Position conversion fails.|
-
-Sample Success Response :
-{
-   "request_time":"10:52:12 02-06-2020",
-   "stat":"Ok"
-}
-
-Sample Failure Response :
-{
-   "stat":"Not_Ok",
-   "emsg":"Invalid Input :  Invalid Position Type"
-}
-
 #### <a name="md-get_orderbook"></a>  Order Book
 List of Orders placed for the account
 
@@ -506,7 +454,6 @@ Request Details :
 |Json Fields|Possible value|Description|
 | --- | --- | ---|
 |uid*||Logged in User Id|
-|actid*||Account Id of logged in user|
 
 Response Details :
 
@@ -607,269 +554,6 @@ Sample Success Output :
    }
 ]
 
-#### <a name="md-get_singleorderhistory"></a>  single order history(orderno)
-history an order
-
-```
-orderno = ret['norenordno'] #from placeorder return value
-ret = api.single_order_history(orderno=orderno)
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|uid*||Logged in User Id|
-|norenordno*||Noren Order Number|
-
-
-Response Details :
-
-Response data will be in json Array of objects with below fields in case of success.
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Order book success or failure indication.|
-|exch||Exchange Segment|
-|tsym||Trading symbol / contract on which order is placed.|
-|norenordno||Noren Order Number|
-|prc||Order Price|
-|qty||Order Quantity|
-|prd||Display product alias name, using prarr returned in user details.|
-|status|||
-|rpt|| (fill/complete etc)|
-|trantype|B / S|Transaction type of the order|
-|prctyp|LMT / MKT|Price type|
-|fillshares||Total Traded Quantity of this order|
-|avgprc||Average trade price of total traded quantity |
-|rejreason||If order is rejected, reason in text form|
-|exchordid||Exchange Order Number|
-|cancelqty||Canceled quantity for order which is in status cancelled.|
-|remarks||Any message Entered during order entry.|
-|dscqty||Order disclosed quantity.|
-|trgprc||Order trigger price|
-|ret|DAY / IOC / EOS|Order validity|
-|uid|||
-|actid|||
-|bpprc||Book Profit Price applicable only if product is selected as B (Bracket order ) |
-|blprc||Book loss Price applicable only if product is selected as H and B (High Leverage and Bracket order ) |
-|trailprc||Trailing Price applicable only if product is selected as H and B (High Leverage and Bracket order ) |
-|amo||Yes / No|
-|pp||Price precision|
-|ti||Tick size|
-|ls||Lot size|
-|token||Contract Token|
-|norentm|||
-|ordenttm|||
-|exch_tm|||
-
-Response data will be in json format with below fields in case of failure:
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Not_Ok|Order book failure indication.|
-|request_time||Response received time.|
-|emsg||Error message|
-
-Sample Success Output :
-
-[
-   {
-       "stat": "Ok",
-       "norenordno": "20121300065716",
-       "uid": "DEMO1",
-       "actid": "DEMO1",
-       "exch": "NSE",
-       "tsym": "ACCELYA-EQ",
-       "qty": "180",
-       "trantype": "B",
-       "prctyp": "LMT",
-       "ret": "DAY",
-       "token": "7053",
-       "pp": "2",
-       "ls": "1",
-       "ti": "0.05",
-       "prc": "800.00",
-       "avgprc": "800.00",
-       "dscqty": "0",
-       "prd": "M",
-       "status": "COMPLETE",
-       "rpt": "Fill",
-       "fillshares": "180",
-       "norentm": "19:59:32 13-12-2020",
-       "exch_tm": "00:00:00 01-01-1980",
-       "remarks": "WC TEST Order",
-       "exchordid": "6858"
-   },
-   {
-       "stat": "Ok",
-       "norenordno": "20121300065716",
-       "uid": "DEMO1",
-       "actid": "DEMO1",
-       "exch": "NSE",
-       "tsym": "ACCELYA-EQ",
-       "qty": "180",
-       "trantype": "B",
-       "prctyp": "LMT",
-       "ret": "DAY",
-       "token": "7053",
-       "pp": "2",
-       "ls": "1",
-       "ti": "0.05",
-       "prc": "800.00",
-       "dscqty": "0",
-       "prd": "M",
-       "status": "OPEN",
-       "rpt": "New",
-       "norentm": "19:59:32 13-12-2020",
-       "exch_tm": "00:00:00 01-01-1980",
-       "remarks": "WC TEST Order",
-       "exchordid": "6858"
-   },
-   {
-       "stat": "Ok",
-       "norenordno": "20121300065716",
-       "uid": "DEMO1",
-       "actid": "DEMO1",
-       "exch": "NSE",
-       "tsym": "ACCELYA-EQ",
-       "qty": "180",
-       "trantype": "B",
-       "prctyp": "LMT",
-       "ret": "DAY",
-       "token": "7053",
-       "pp": "2",
-       "ls": "1",
-       "ti": "0.05",
-       "prc": "800.00",
-       "dscqty": "0",
-       "prd": "M",
-       "status": "PENDING",
-       "rpt": "PendingNew",
-       "norentm": "19:59:32 13-12-2020",
-       "remarks": "WC TEST Order"
-   },
-   {
-       "stat": "Ok",
-       "norenordno": "20121300065716",
-       "uid": "DEMO1",
-       "actid": "DEMO1",
-       "exch": "NSE",
-       "tsym": "ACCELYA-EQ",
-       "qty": "180",
-       "trantype": "B",
-       "prctyp": "LMT",
-       "ret": "DAY",
-       "token": "7053",
-       "pp": "2",
-       "ls": "1",
-       "ti": "0.05",
-       "prc": "800.00",
-       "prd": "M",
-       "status": "PENDING",
-       "rpt": "NewAck",
-       "norentm": "19:59:32 13-12-2020",
-       "remarks": "WC TEST Order"
-   }
-]
-
-#### <a name="md-get_holdings"></a> get_holdings(product_type)
-retrieves the holdings as a list
-
-Example:
-```
-ret = api.get_holdings()
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|uid*||Logged in User Id|
-|actid*||Account id of the logged in user.|
-|prd*||Product name|
-
-Response Details :
-Response data will be in json format with below fields in case of Success:
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Holding request success or failure indication.|
-|exch_tsym||Array of objects exch_tsym objects as defined below.|
-|holdqty||Holding quantity|
-|dpqty||DP Holding quantity|
-|npoadqty||Non Poa display quantity|
-|colqty||Collateral quantity|
-|benqty||Beneficiary quantity|
-|unplgdqty||Unpledged quantity|
-|brkcolqty||Broker Collateral|
-|btstqty||BTST quantity|
-|btstcolqty||BTST Collateral quantity|
-|usedqty||Holding used today|
-|upldprc||Average price uploaded along with holdings|
-Notes:
-Valuation : btstqty + holdqty + brkcolqty + unplgdqty + benqty + Max(npoadqty, dpqty) - usedqty
-Salable: btstqty + holdqty + unplgdqty + benqty + dpqty - usedqty
-
-
-Exch_tsym object:
-|Json Fields of object in values Array|Possible value|Description|
-| --- | --- | ---|
-|exch|NSE, BSE, NFO ...|Exchange |
-|tsym||Trading symbol of the scrip (contract)|
-|token||Token of the scrip (contract)|
-|pp||Price precision|
-|ti||Tick size|
-|ls||Lot size|
-
-Response data will be in json format with below fields in case of failure:
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Not_Ok|Position book request failure indication.|
-|request_time||Response received time.|
-|emsg||Error message|
-
-Sample Success Response :
-[   
-      {
-            "stat":"Ok", 
-            "exch_tsym":[
-                                      {
-                                            "exch":"NSE",
-                                            "token":"13",
-                     "tsym":"ABB-EQ"
-   }
-         ],
-            "holdqty":"2000000",
-            "colqty":"200",
-            "btstqty":"0",
-            "btstcolqty":"0",
-            "usedqty":"0",
-            "upldprc" : "1800.00"
-      },
-      {
-"stat":"Ok",
-"exch_tsym":[
-   {
-          "exch":"NSE",
-          "token":"22",
-          "tsym":"ACC-EQ"
-   }
-         ],
-"holdqty":"2000000",
-"colqty":"200",
-"btstqty":"0",
-"btstcolqty":"0",
-"usedqty":"0",
-               "upldprc" : "1400.00"
-        }
-]
-
-Sample Failure Response :
-{
-   "stat":"Not_Ok",
-   "emsg":"Invalid Input : Missing uid or actid or prd."
-}
-
 #### <a name="md-get_positions"></a> get_positions()
 
 retrieves the overnight and day positions as a list
@@ -891,7 +575,6 @@ Request Details :
 |Json Fields|Possible value|Description|
 | --- | --- | ---|
 |uid*||Logged in User Id|
-|actid*||Account id of the logged in user.|
 
 Response Details :
 
@@ -906,37 +589,41 @@ Response data will be in json format with Array of Objects with below fields in 
 |uid||User Id|
 |actid||Account Id|
 |prd||Product name to be shown.|
-|netqty||Net Position quantity|
-|netavgprc||Net position average price|
 |daybuyqty||Day Buy Quantity|
 |daysellqty||Day Sell Quantity|
-|daybuyavgprc||Day Buy average price|
-|daysellavgprc||Day buy average price|
 |daybuyamt||Day Buy Amount|
 |daysellamt||Day Sell Amount|
 |cfbuyqty||Carry Forward Buy Quantity|
-|cforgavgprc||Original Avg Price|
 |cfsellqty||Carry Forward Sell Quantity|
-|cfbuyavgprc||Carry Forward Buy average price|
-|cfsellavgprc||Carry Forward Buy average price|
 |cfbuyamt||Carry Forward Buy Amount|
 |cfsellamt||Carry Forward Sell Amount|
-|lp||LTP|
-|rpnl||RealizedPNL|
-|urmtom||UnrealizedMTOM.|(Can be recalculated in LTP update :| = netqty * (lp from web socket - netavgprc) * prcftr ||
-|bep||Break even price|
-|openbuyqty|||
-|opensellqty|||
-|openbuyamt|||
-|opensellamt|||
-|openbuyavgprc|||
-|opensellavgprc|||
-|mult|||
-|pp|||
-|prcftr||gn*pn/(gd*pd). |
-|ti||Tick size|
-|ls||Lot size|
-|request_time||This will be present only in a failure response.|
+|openbuyqty||Open Buy Quantity|
+|opensellqty||Open Sell Quantity|
+|openbuyamt||Open Buy Amount|
+|opensellamt||Open Sell Amount|
+|instname||Instrument Name|
+|upload_prc||Upload Price|
+|Child_orders||Array Object,|
+
+child_orders Obj format
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|exch||Exchange segment|
+|token||Contract token|
+|daybuyqty||Day Buy Quantity|
+|daysellqty||Day Sell Quantity|
+|daybuyamt||Day Buy Amount|
+|daysellamt||Day Sell Amount|
+|cfbuyqty||CF Buy Quantity|
+|cfsellqty||CF Sell Quantity|
+|cfbuyamt||CF Buy Amount|
+|cfsellamt||CF Sell Amount
+|openbuyqty||Open Buy Quantity|
+|opensellqty||Open Sell Quantity|
+|openbuyamt||Open Buy Amount|
+|opensellamt||Open Sell Amount|
+|upload_prc||Upload Price|
+
 
 Response data will be in json format with below fields in case of failure:
 
@@ -949,46 +636,62 @@ Response data will be in json format with below fields in case of failure:
 
 Sample Success Response :
 [
-     {
+{
 "stat":"Ok",
-"uid":"POORNA",
-"actid":"POORNA",
-"exch":"NSE",
-"tsym":"ACC-EQ",
-"prarr":"C",
-"pp":"2",
-"ls":"1",
-"ti":"5.00",
-"mult":"1",
-"prcftr":"1.000000",
-"daybuyqty":"2",
-"daysellqty":"2",
-"daybuyamt":"2610.00",
-"daybuyavgprc":"1305.00",
-"daysellamt":"2610.00",
-"daysellavgprc":"1305.00",
-"cfbuyqty":"0",
-"cfsellqty":"0",
-"cfbuyamt":"0.00",
-"cfbuyavgprc":"0.00",
-"cfsellamt":"0.00",
-"cfsellavgprc":"0.00",
-"openbuyqty":"0",
-"opensellqty":"23",
-"openbuyamt":"0.00",
-"openbuyavgprc":"0.00",
-"opensellamt":"30015.00",
-"opensellavgprc":"1305.00",
-"netqty":"0",
-"netavgprc":"0.00",
-"lp":"0.00",
-"urmtom":"0.00",
-"rpnl":"0.00",
-"cforgavgprc":"0.00"
-
-    }
+"actid":"TESTINV1",
+"exch":"EQT",
+"token":"PRAKASH",
+"prd":"I",
+"openbuyqty":"00",
+"opensellqty":"09",
+"openbuyamt":"00",
+"opensellamt":"54000",
+"daybuyqty":"01",
+"daysellqty":"01",
+"daybuyamt":"6000",
+"daysellamt":"6000",
+"cfbuyqty":"00",
+"cfsellqty":"00",
+"cfbuyamt":"00",
+"cfsellamt":"6000",
+"child_orders":[
+                {
+                "exch":"NSE",
+                "token":"2708",
+                "openbuyqty":"00",
+                "opensellqty":"09",
+                "openbuyamt":"00",
+                "opensellamt":"54000",
+                "daybuyqty":"00",
+                "daysellqty":"01",
+                "daybuyamt":"00",
+                "daysellamt":"6000",
+                "cfbuyqty":"00",
+                "cfsellqty":"00",
+                "cfbuyamt":"00",
+                "cfsellamt":"00",
+                "upload_prc":"00"
+                },
+                {
+                "exch":"BSE",
+                "token":"506022",
+                "openbuyqty":"00",
+                "opensellqty":"00",
+                "openbuyamt":"00",
+                "opensellamt":"00",
+                "daybuyqty":"01",
+                "daysellqty":"00",
+                "daybuyamt":"6000",
+                "daysellamt":"00",
+                "cfbuyqty":"00",
+                "cfsellqty":"00",
+                "cfbuyamt":"00",
+                "cfsellamt":"00",
+                "upload_prc":"00"
+                }
+                ]
+}
 ]
-
 Sample Failure Response :
 {
     "stat":"Not_Ok",
@@ -996,367 +699,6 @@ Sample Failure Response :
     "emsg":"Error Occurred : 5 \"no data\""
 }
 
-#### <a name="md-get_limits"></a> get_limits
-retrieves the margin and limits set
-
-Request Details:
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-| product_type | ```string``` | True | retreives the delivery holdings or for a given product  |
-| segment | ```string``` | True | CM / FO / FX  |
-| exchange | ```string``` | True | Exchange NSE/BSE/MCX |
-
-the response is as follows,
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-|stat|Ok or Not_Ok| False |Limits request success or failure indication.|
-|actid| ```string``` | True |Account id|
-|prd| ```string``` | True |Product name|
-|seg| ```string``` | True |Segment CM / FO / FX |
-|exch| ```string``` | True |Exchange|
-|-------------------------Cash Primary Fields-------------------------------|
-|cash| ```string``` | True |Cash Margin available|
-|payin| ```string``` | True |Total Amount transferred using Payins today |
-|payout| ```string``` | True |Total amount requested for withdrawal today|
-|-------------------------Cash Additional Fields-------------------------------|
-|brkcollamt| ```string``` | True |Prevalued Collateral Amount|
-|unclearedcash| ```string``` | True |Uncleared Cash (Payin through cheques)|
-|daycash| ```string``` | True |Additional leverage amount / Amount added to handle system errors - by broker.  |
-|-------------------------Margin Utilized----------------------------------|
-|marginused| ```string``` | True |Total margin / fund used today|
-|mtomcurper| ```string``` | True |Mtom current percentage|
-|-------------------------Margin Used components---------------------|
-|cbu| ```string``` | True |CAC Buy used|
-|csc| ```string``` | True |CAC Sell Credits|
-|rpnl| ```string``` | True |Current realized PNL|
-|unmtom| ```string``` | True |Current unrealized mtom|
-|marprt| ```string``` | True |Covered Product margins|
-|span| ```string``` | True |Span used|
-|expo| ```string``` | True |Exposure margin|
-|premium| ```string``` | True |Premium used|
-|varelm| ```string``` | True |Var Elm Margin|
-|grexpo| ```string``` | True |Gross Exposure|
-|greexpo_d| ```string``` | True |Gross Exposure derivative|
-|scripbskmar| ```string``` | True |Scrip basket margin|
-|addscripbskmrg| ```string``` | True |Additional scrip basket margin|
-|brokerage| ```string``` | True |Brokerage amount|
-|collateral| ```string``` | True |Collateral calculated based on uploaded holdings|
-|grcoll| ```string``` | True |Valuation of uploaded holding pre haircut|
-|-------------------------Additional Risk Limits---------------------------|
-|turnoverlmt| ```string``` | True ||
-|pendordvallmt| ```string``` | True ||
-|-------------------------Additional Risk Indicators---------------------------|
-|turnover| ```string``` | True |Turnover|
-|pendordval| ```string``` | True |Pending Order value|
-|-------------------------Margin used detailed breakup fields-------------------------|
-|rzpnl_e_i| ```string``` | True |Current realized PNL (Equity Intraday)|
-|rzpnl_e_m| ```string``` | True |Current realized PNL (Equity Margin)|
-|rzpnl_e_c| ```string``` | True |Current realized PNL (Equity Cash n Carry)|
-|rzpnl_d_i| ```string``` | True |Current realized PNL (Derivative Intraday)|
-|rzpnl_d_m| ```string``` | True |Current realized PNL (Derivative Margin)|
-|rzpnl_f_i| ```string``` | True |Current realized PNL (FX Intraday)|
-|rzpnl_f_m| ```string``` | True |Current realized PNL (FX Margin)|
-|rzpnl_c_i| ```string``` | True |Current realized PNL (Commodity Intraday)|
-|rzpnl_c_m| ```string``` | True |Current realized PNL (Commodity Margin)|
-|uzpnl_e_i| ```string``` | True |Current unrealized MTOM (Equity Intraday)|
-|uzpnl_e_m| ```string``` | True |Current unrealized MTOM (Equity Margin)|
-|uzpnl_e_c| ```string``` | True |Current unrealized MTOM (Equity Cash n Carry)|
-|uzpnl_d_i| ```string``` | True |Current unrealized MTOM (Derivative Intraday)|
-|uzpnl_d_m| ```string``` | True |Current unrealized MTOM (Derivative Margin)|
-|uzpnl_f_i| ```string``` | True |Current unrealized MTOM (FX Intraday)|
-|uzpnl_f_m| ```string``` | True |Current unrealized MTOM (FX Margin)|
-|uzpnl_c_i| ```string``` | True |Current unrealized MTOM (Commodity Intraday)|
-|uzpnl_c_m| ```string``` | True |Current unrealized MTOM (Commodity Margin)|
-|span_d_i| ```string``` | True |Span Margin (Derivative Intraday)|
-|span_d_m| ```string``` | True |Span Margin (Derivative Margin)|
-|span_f_i| ```string``` | True |Span Margin (FX Intraday)|
-|span_f_m| ```string``` | True |Span Margin (FX Margin)|
-|span_c_i| ```string``` | True |Span Margin (Commodity Intraday)|
-|span_c_m| ```string``` | True |Span Margin (Commodity Margin)|
-|expo_d_i| ```string``` | True |Exposure Margin (Derivative Intraday)|
-|expo_d_m| ```string``` | True |Exposure Margin (Derivative Margin)|
-|expo_f_i| ```string``` | True |Exposure Margin (FX Intraday)|
-|expo_f_m| ```string``` | True |Exposure Margin (FX Margin)|
-|expo_c_i| ```string``` | True |Exposure Margin (Commodity Intraday)|
-|expo_c_m| ```string``` | True |Exposure Margin (Commodity Margin)|
-|premium_d_i| ```string``` | True |Option premium (Derivative Intraday)|
-|premium_d_m| ```string``` | True |Option premium (Derivative Margin)|
-|premium_f_i| ```string``` | True |Option premium (FX Intraday)|
-|premium_f_m| ```string``` | True |Option premium (FX Margin)|
-|premium_c_i| ```string``` | True |Option premium (Commodity Intraday)|
-|premium_c_m| ```string``` | True |Option premium (Commodity Margin)|
-|varelm_e_i| ```string``` | True |Var Elm (Equity Intraday)|
-|varelm_e_m| ```string``` | True |Var Elm (Equity Margin)|
-|varelm_e_c| ```string``` | True |Var Elm (Equity Cash n Carry)|
-|marprt_e_h| ```string``` | True |Covered Product margins (Equity High leverage)|
-|marprt_e_b| ```string``` | True |Covered Product margins (Equity Bracket Order)|
-|marprt_d_h| ```string``` | True |Covered Product margins (Derivative High leverage)|
-|marprt_d_b| ```string``` | True |Covered Product margins (Derivative Bracket Order)|
-|marprt_f_h| ```string``` | True |Covered Product margins (FX High leverage)|
-|marprt_f_b| ```string``` | True |Covered Product margins (FX Bracket Order)|
-|marprt_c_h| ```string``` | True |Covered Product margins (Commodity High leverage)|
-|marprt_c_b| ```string``` | True |Covered Product margins (Commodity Bracket Order)|
-|scripbskmar_e_i| ```string``` | True |Scrip basket margin (Equity Intraday)|
-|scripbskmar_e_m| ```string``` | True |Scrip basket margin (Equity Margin)|
-|scripbskmar_e_c| ```string``` | True |Scrip basket margin (Equity Cash n Carry)|
-|addscripbskmrg_d_i| ```string``` | True |Additional scrip basket margin (Derivative Intraday)|
-|addscripbskmrg_d_m| ```string``` | True |Additional scrip basket margin (Derivative Margin)|
-|addscripbskmrg_f_i| ```string``` | True |Additional scrip basket margin (FX Intraday)|
-|addscripbskmrg_f_m| ```string``` | True |Additional scrip basket margin (FX Margin)|
-|addscripbskmrg_c_i| ```string``` | True |Additional scrip basket margin (Commodity Intraday)|
-|addscripbskmrg_c_m| ```string``` | True |Additional scrip basket margin (Commodity Margin)|
-|brkage_e_i| ```string``` | True |Brokerage (Equity Intraday)|
-|brkage_e_m| ```string``` | True |Brokerage (Equity Margin)|
-|brkage_e_c| ```string``` | True |Brokerage (Equity CAC)|
-|brkage_e_h| ```string``` | True |Brokerage (Equity High Leverage)|
-|brkage_e_b| ```string``` | True |Brokerage (Equity Bracket Order)|
-|brkage_d_i| ```string``` | True |Brokerage (Derivative Intraday)|
-|brkage_d_m| ```string``` | True |Brokerage (Derivative Margin)|
-|brkage_d_h| ```string``` | True |Brokerage (Derivative High Leverage)|
-|brkage_d_b| ```string``` | True |Brokerage (Derivative Bracket Order)|
-|brkage_f_i| ```string``` | True |Brokerage (FX Intraday)|
-|brkage_f_m| ```string``` | True |Brokerage (FX Margin)|
-|brkage_f_h| ```string``` | True |Brokerage (FX High Leverage)|
-|brkage_f_b| ```string``` | True |Brokerage (FX Bracket Order)|
-|brkage_c_i| ```string``` | True |Brokerage (Commodity Intraday)|
-|brkage_c_m| ```string``` | True |Brokerage (Commodity Margin)|
-|brkage_c_h| ```string``` | True |Brokerage (Commodity High Leverage)|
-|brkage_c_b| ```string``` | True |Brokerage (Commodity Bracket Order)|
-|peak_mar| ```string``` | True |Peak margin used by the client|
-|request_time| ```string``` | True |This will be present only in a successful response.|
-|emsg| ```string``` | True |This will be present only in a failure response.|
-
-Sample Success Response :
-{
-    "request_time":"18:07:31 29-05-2020",
-"stat":"Ok",
-"cash":"1500000000000000.00",
-"payin":"0.00",
-"payout":"0.00",
-"brkcollamt":"0.00",
-"unclearedcash":"0.00",
-"daycash":"0.00",
-"turnoverlmt":"50000000000000.00",
-"pendordvallmt":"2000000000000000.00",
-"turnover":"3915000.00",
-"pendordval":"2871000.00",
-"marginused":"3945540.00",
-"mtomcurper":"0.00",
-"urmtom":"30540.00",
-"grexpo":"3915000.00",
-"uzpnl_e_i":"15270.00",
-"uzpnl_e_m":"61080.00",
-"uzpnl_e_c":"-45810.00"
-}
-
-Sample Failure Response :
-{
-   "stat":"Not_Ok",
-   "emsg":"Server Timeout :  "
-}
-Market Info
-
-
-#### <a name="md-searchscrip"></a> searchscrip(exchange, searchtext):
-Search for scrip or contract and its properties  
-
-The call can be made to get the exchange provided token for a scrip or alternately can search for a partial string to get a list of matching scrips
-Trading Symbol:
-
-SymbolName + ExpDate + 'F' for all data having InstrumentName starting with FUT
-
-SymbolName + ExpDate + 'P' + StrikePrice for all data having InstrumentName starting with OPT and with OptionType PE
-
-SymbolName + ExpDate + 'C' + StrikePrice for all data having InstrumentName starting with OPT and with OptionType C
-
-For MCX, F to be ignored for FUT instruments
-
-Example:
-```
-exch  = 'NFO'
-query = 'BANKNIFTY 30DEC CE' # multiple criteria to narrow results 
-ret = api.searchscrip(exchange=exch, searchtext=query)
-
-if ret != None:
-    symbols = ret['values']
-    for symbol in symbols:
-        print('{0} token is {1}'.format(symbol['tsym'], symbol['token']))
-```
-Example 2:
-```
-api.searchscrip(exchange='NSE', searchtext='REL')
-```
-This will reply as following
-```
-{
-    "stat": "Ok",
-    "values": [
-        {
-            "exch": "NSE",
-            "token": "18069",
-            "tsym": "REL100NAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "24225",
-            "tsym": "RELAXO-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "4327",
-            "tsym": "RELAXOFOOT-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18068",
-            "tsym": "RELBANKNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "2882",
-            "tsym": "RELCAPITAL-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18070",
-            "tsym": "RELCONSNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18071",
-            "tsym": "RELDIVNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18072",
-            "tsym": "RELGOLDNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "2885",
-            "tsym": "RELIANCE-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "15068",
-            "tsym": "RELIGARE-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "553",
-            "tsym": "RELINFRA-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18074",
-            "tsym": "RELNV20NAV-EQ"
-        }
-    ]
-}
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|uid*||Logged in User Id|
-|stext*||Search Text|
-|exch||Exchange (Select from ‘exarr’ Array provided in User Details response)|
-
-Response Details :
-
-Response data will be in json format with below fields.
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Market watch success or failure indication.|
-|values||Array of json objects. (object fields given in below table)|
-|emsg||This will be present only in case of errors. |That is : 1) Invalid Input|              2) Session Expired|
-
-
-|Json Fields of object in values Array|Possible value|Description|
-| --- | --- | ---|
-|exch|NSE, BSE, NFO ...|Exchange |
-|tsym||Trading symbol of the scrip (contract)|
-|token||Token of the scrip (contract)|
-|pp||Price precision|
-|ti||Tick size|
-|ls||Lot size|
-
-Sample Success Response :
-
-{
-    "stat": "Ok",
-    "values": [
-        {
-            "exch": "NSE",
-            "token": "18069",
-            "tsym": "REL100NAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "24225",
-            "tsym": "RELAXO-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "4327",
-            "tsym": "RELAXOFOOT-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18068",
-            "tsym": "RELBANKNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "2882",
-            "tsym": "RELCAPITAL-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18070",
-            "tsym": "RELCONSNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18071",
-            "tsym": "RELDIVNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18072",
-            "tsym": "RELGOLDNAV-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "2885",
-            "tsym": "RELIANCE-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "15068",
-            "tsym": "RELIGARE-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "553",
-            "tsym": "RELINFRA-EQ"
-        },
-        {
-            "exch": "NSE",
-            "token": "18074",
-            "tsym": "RELNV20NAV-EQ"
-        }
-    ]
-}
-
-Sample Failure Response :
-{
-   "stat":"Not_Ok",
-   "emsg":"No Data :  "
-}
 
 #### <a name="md-get_security_info"></a> get_security_info(exchange, token):
 gets the complete details and its properties 
@@ -1595,290 +937,115 @@ Sample Failure Response :
     "emsg":"Error Occurred : 5 \"no data\""
 }
 
-#### <a name="md-get_time_price_series"></a> get_time_price_series(exchange, token, starttime, endtime, interval):
-gets the chart date for the symbol
 
-Example:
+#### <a name="md-get_clients"></a> get_clients():
+
+Example: 
 ```
-lastBusDay = datetime.datetime.today()
-lastBusDay = lastBusDay.replace(hour=0, minute=0, second=0, microsecond=0)
-ret = api.get_time_price_series(exchange='NSE', token='22', starttime=lastBusDay.timestamp(), interval=5)
+ret = api.get_clients()
 ```
+
 Request Details :
 
 |Json Fields|Possible value|Description|
 | --- | --- | ---|
 |uid*||Logged in User Id|
-|exch*||Exchange|
-|token*|||
-|st||Start time (seconds since 1 jan 1970)|
-|et||End Time (seconds since 1 jan 1970)|
-|intrv|“1”, ”3”, “5”, “10”, “15”, “30”, “60”, “120”, “240”|Candle size in minutes (optional field, if not given assume to be “1”)|
 
 Response Details :
 
-Response data will be in json format  in case for failure.
+Response data will be in json format with below fields.
 
 |Json Fields|Possible value|Description|
 | --- | --- | ---|
-|stat|Not_Ok|TPData failure indication.|
+|stat|Ok or Not_Ok|Watch list update success or failure indication.|
+|request_time||Requested Time|
+|entities||Json array of strings with account id and exch ist |
 |emsg||This will be present only in case of errors. |
 
-Response data will be in json format  in case for success.
-
+entities Obj format
 |Json Fields|Possible value|Description|
 | --- | --- | ---|
-|stat|Ok|TPData success indication.|
-|time||DD/MM/CCYY hh:mm:ss|
-|into||Interval open|
-|inth||Interval high|
-|intl||Interval low|
-|intc||Interval close|
-|intvwap||Interval vwap|
-|intv||Interval volume|
-|v||volume|
-|intoi||Interval io change|
-|oi||oi|
-
+|exch||Exchange name|
+|part_id||Part Id|
 
 Sample Success Response :
-[
-    {
-       "stat":"Ok",
-       "time":"02-06-2020 15:46:23",
-       "into":"0.00",
-"inth":"0.00",
-"intl":"0.00",
-"intc":"0.00",
-"intvwap":"0.00",
-"intv":"0",
-"intoi":"0",
-"v":"980515",
-"oi":"128702"
-    },
-    {
-"stat":"Ok",
-"time":"02-06-2020 15:45:23",
-"into":"0.00",
-"inth":"0.00",
-"intl":"0.00",
-"intc":"0.00",
-"intvwap":"0.00",
-"intv":"0",
-"intoi":"0",
-"v":"980515",
-"oi":"128702"
-     },
-    {
-"stat":"Ok",
-"time":"02-06-2020 15:44:23",
-"into":"0.00",
-"inth":"0.00",
-"intl":"0.00",
-"intc":"0.00",
-"intvwap":"0.00",
-"intv":"0",
-"intoi":"0",
-"v":"980515",
-"oi":"128702"
-    },
-    {
-"stat":"Ok",
-"time":"02-06-2020 15:43:23",
-"into":"1287.00",
-"inth":"1287.00",
-"intl":"0.00",
-"intc":"1287.00",
-"intvwap":"128702.00",
-"intv":"4",
-"intoi":"128702",
-"v":"980515",
-"oi":"128702"
-    },
-    {
-"stat":"Ok",
-"time":"02-06-2020 15:42:23",
-"into":"0.00",
-"inth":"0.00",
-"intl":"0.00",
-"intc":"0.00",
-"intvwap":"0.00",
-"intv":"0",
-"intoi":"0",
-"v":"980511",
-"oi":"128702"
-    }
+{
+"stat": "Ok",
+"request_time": "09:49:37 19-07-2022",
+"entities": [
+{
+"acct_id": "GURURAJ",
+"exch_list": [
+{
+"exch": "CDS",
+"part_id": ""
+},
+{
+"exch": "NSE","part_id": ""
+},
+{
+"exch": "NFO",
+"part_id": ""
+},
+{
+"exch": "MCX",
+"part_id": ""
+},
+{
+"exch": "BSE",
+"part_id": ""
+},
+{
+"exch": "NCX",
+"part_id": ""
+},
+{
+"exch": "BSTAR",
+"part_id": ""
+},
+{
+"exch": "BCD",
+"part_id": ""
+}
 ]
+},
+{
+"acct_id": "CLINV1",
+"exch_list": [
+{
+"exch": "NSE",
+"part_id": ""
+},
+{
+"exch": "BSE",
+"part_id": ""
+}
+]
+},
+{"acct_id": "1T012",
+"exch_list": []
+},
+{
+"acct_id": "CH005",
+"exch_list": [
+{
+"exch": "NSE",
+"part_id": ""
+},
+{
+"exch": "BSE",
+"part_id": ""
+}
+]
+}
+]
+}
 
 Sample Failure Response :
 {
-     "stat":"Not_Ok",
-     "emsg":"Session Expired : Invalid Session Key"
+"stat": "Not_Ok",
+"emsg": "Session Expired : Invalid Session Key"
 }
-
-
-#### <a name="md-get_optionchain"></a> get_option_chain(exchange, tradingsymbol, strikeprice, count):
-
-gets the contracts of related strikes
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-| exchange | ```string``` | False | Exchange (UI need to check if exchange in NFO / CDS / MCX / or any other exchange which has options, if not don't allow)|
-| tradingsymbol | ```string``` | False | Trading symbol of any of the option or future. Option chain for that underlying will be returned. (use url encoding to avoid special char error for symbols like M&M)|
-| strikeprice | ```float``` | False | Mid price for option chain selection|
-| count | ```int``` | True | Number of strike to return on one side of the mid price for PUT and CALL.  (example cnt is 4, total 16 contracts will be returned, if cnt is is 5 total 20 contract will be returned)|
-
-the response is as follows,
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-| stat | ```string``` | True | ok or Not_ok |
-| values | ```string``` | True | properties of the scrip |
-| emsg | ```string``` | False | Error Message |
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-| exch | ```string``` | False | Exchange |
-| tsym | ```string``` | False | Trading Symbol of Contract |
-| token | ```string``` | False | Contract token |
-| optt | ```string``` | False | Option type |
-| strprc | ```string``` | False | Strike Price |
-| pp | ```string``` | False | Price Precision |
-| ti | ```string``` | False | Tick Size |
-| ls | ```string``` | False | Lot Size |
-
-#### <a name="md-start_websocket"></a> start_websocket()
-starts the websocket, WebSocket feed has 2 types of ticks( t=touchline d=depth)and 2 stages (k=acknowledgement, f=further change in tick). 
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | ---|
-| subscribe_callback | ```function``` | False | callback for market updates |
-| order_update_callback | ```function```| False | callback for order updates |
-| socket_open_callback | ```function``` | False | callback when socket is open (reconnection also) |
-| socket_close_callback | ```function```| False | callback when socket is closed |
-
-#### <a name="md-subscribe_orders"></a> subscribe_orders()
-get order and trade update callbacks
-
-Subscription Acknowledgement:
-
-| Json Fields| Possible value| Description| 
-| --- | --- | --- |
-| t  |  ok |  ‘ok’ represents order update subscription acknowledgement | 
-
-Order Update subscription Updates :
-
- | Json Fields | Possible value |  Description | 
- | --- | --- | --- |
- | t | om | ‘om’ represents touchline feed | 
- | norenordno |   | Noren Order Number | 
- | uid |   | User Id | 
- | actid |   | Account ID | 
- | exch |   | Exchange | 
- | tsym |   | Trading symbol | 
- | qty |   | Order quantity | 
- | prc |   | Order Price | 
- | prd |   | Product | 
- | status |   | Order status (New, Replaced,  Complete, Rejected etc) | 
- | reporttype |   | Order event for which this message is sent out. (Fill, Rejected, Canceled) | 
- | trantype |   | Order transaction type, buy or sell | 
- | prctyp |   | Order price type (LMT, MKT, SL-LMT, SL-MKT) | 
- | ret |   | Order retention type (DAY, EOS, IOC,...) | 
- | fillshares |   | Total Filled shares for this order | 
- | avgprc |   | Average fill price | 
- | fltm |   | Fill Time(present only when reporttype is Fill) | 
- | flid |   | Fill ID (present only when reporttype is Fill) | 
- | flqty |   | Fill Qty(present only when reporttype is Fill) | 
- | flprc |   | Fill Price(present only when reporttype is Fill) | 
- | rejreason |   | Order rejection reason, if rejected | 
- | exchordid |   | Exchange Order ID | 
- | cancelqty |   | Canceled quantity, in case of canceled order | 
- | remarks |   | User added tag, while placing order | 
- | dscqty |   | Disclosed quantity | 
- | trgprc |   | Trigger price for SL orders | 
- | snonum |   | This will be present for child orders in case of cover and bracket orders, if present needs to be sent during exit | 
- | snoordt |   | This will be present for child orders in case of cover and bracket orders, it will indicate whether the order is profit or stoploss | 
- | blprc |   | This will be present for cover and bracket parent order. This is the differential stop loss trigger price to be entered.  | 
- | bpprc |   | This will be present for bracket parent order. This is the differential profit price to be entered.  | 
- | trailprc |   | This will be present for cover and bracket parent order. This is required if trailing ticks is to be enabled. | 
- | exch_tm |   | This will have the exchange update time | 
-
-
-#### <a name="md-subscribe"></a> subscribe([instruments])
-send a list of instruments to watch
-
-t='tk' is sent once on subscription for each instrument. this will have all the fields with the most recent value
-thereon t='tf' is sent for fields that have changed.
-```
-For example
-quote event: 03-12-2021 11:54:44{'t': 'tk', 'e': 'NSE', 'tk': '11630', 'ts': 'NTPC-EQ', 'pp': '2', 'ls': '1', 'ti': '0.05', 'lp': '118.55', 'h': '118.65', 'l': '118.10', 'ap': '118.39', 'v': '162220', 'bp1': '118.45', 'sp1': '118.50', 'bq1': '26', 'sq1': '6325'}
-quote event: 03-12-2021 11:54:45{'t': 'tf', 'e': 'NSE', 'tk': '11630', 'lp': '118.45', 'ap': '118.40', 'v': '166637', 'sp1': '118.55', 'bq1': '3135', 'sq1': '30'}
-quote event: 03-12-2021 11:54:46{'t': 'tf', 'e': 'NSE', 'tk': '11630', 'lp': '118.60'}
-```
-in the example above we see first message t='tk' with all the values, 2nd message has lasttradeprice avg price and few other fields with value changed.. note bp1 isnt sent as its still 118.45
-in the next tick ( 3rd message) only last price is changed to 118.6
-
-This method can be used to subscribe indices as well such as Nifty-50 [NSE|26000], BankNifty[NSE|26009]
-
-| Param | Type | Optional |Description |
-| --- | --- | --- | -----|
-| instruments | ```list``` | False | list of instruments [NSE\|22,CDS\|1] |
-
-Subscription Acknowledgement:
-
-Number of Acknowledgements for a single subscription will be the same as the number of scrips mentioned in the key (k) field.
-
-| Json Fields | Possible value | Description|
-| --- | --- | --- | 
-| t | tk |‘tk’ represents touchline acknowledgement |
-| e  |NSE, BSE, NFO ..|Exchange name | 
-| tk |22|Scrip Token |
-| pp |2 for NSE, BSE & 4 for CDS USDINR|Price precision  |
-| ts | | Trading Symbol |
-| ti | | Tick size |
-| ls | | Lot size |
-| lp | |LTP |
-| pc | |Percentage change |
-| v | | volume |
-| o | | Open price |
-| h | | High price |
-| l | | Low price |
-| c | | Close price |
-| ap | | Average trade price |
-| oi | | Open interest |
-| poi | | Previous day closing Open Interest |
-| toi | | Total open interest for underlying |
-| bq1  | | Best Buy Quantity 1 |
-| bp1  | | Best Buy Price 1 |
-| sq1  | | Best Sell Quantity 1 |
-| sp1  | | Best Sell Price 1|
-
-TouchLine subscription Updates :
-Accept for t, e, and tk other fields may / may not be present.
-
-| Json Fields | Possible value | Description|
-| --- | --- | --- | 
-| t | tf |‘tf’ represents touchline acknowledgement |
-| e  |NSE, BSE, NFO ..|Exchange name | 
-| tk | 22 |Scrip Token |
-| lp | |LTP |
-| pc | |Percentage change |
-| v | | volume |
-| o | | Open price |
-| h | | High price |
-| l | | Low price |
-| c | | Close price |
-| ap | | Average trade price |
-| oi | | Open interest |
-| poi | | Previous day closing Open Interest |
-| toi | | Total open interest for underlying |
-| bq1  | | Best Buy Quantity 1 |
-| bp1  | | Best Buy Price 1 |
-| sq1  | | Best Sell Quantity 1 |
-| sp1  | | Best Sell Price 1|
-
-#### <a name="md-unsubscribe"></a> unsubscribe()
-send a list of instruments to stop watch
 
 ****
 ## <a name="md-example-basic"></a> Example - Getting Started
