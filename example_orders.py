@@ -75,7 +75,7 @@ if ret != None:
         prompt1=input('what shall we do? ').lower()        
             
         if prompt1 == 'p':
-            ret = api.place_order(buy_or_sell='B', product_type='C',
+            ret = api.place_order(act_id="TSTINV3", buy_or_sell='B', product_type='C',
                         exchange='NSE', tradingsymbol='INFY-EQ', 
                         quantity=1, discloseqty=0,price_type='LMT', price=1500.00, trigger_price=None,
                         retention='DAY', remarks='my_order_001')
