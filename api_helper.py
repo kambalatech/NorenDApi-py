@@ -6,12 +6,13 @@ import concurrent.futures
 
 api = None
 class Order:
-     def __init__(self, buy_or_sell:str = None, product_type:str = None,
+     def __init__(self, act_id:str = None, buy_or_sell:str = None, product_type:str = None,
                  exchange: str = None, tradingsymbol:str =None, 
                  price_type: str = None, quantity: int = None, 
                  price: float = None,trigger_price:float = None, discloseqty: int = 0,
                  retention:str = 'DAY', remarks: str = "tag",
                  order_id:str = None):
+        self.act_id=act_id         
         self.buy_or_sell=buy_or_sell
         self.product_type=product_type
         self.exchange=exchange
@@ -63,8 +64,8 @@ class NorenApiPy(NorenApi):
 
         return result
                 
-    def place_order(self,order: Order):
-        ret = NorenApi.place_order(self, buy_or_sell=order.buy_or_sell, product_type=order.product_type,
+    def placeOrder(self,order: Order):
+        ret = NorenApi.place_order(self, act_id=order.act_id, buy_or_sell=order.buy_or_sell, product_type=order.product_type,
                             exchange=order.exchange, tradingsymbol=order.tradingsymbol, 
                             quantity=order.quantity, discloseqty=order.discloseqty, price_type=order.price_type, 
                             price=order.price, trigger_price=order.trigger_price,
