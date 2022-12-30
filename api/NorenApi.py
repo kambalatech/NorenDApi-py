@@ -300,7 +300,7 @@ class NorenApi:
 
         return resDict
 
-    def place_order(self, buy_or_sell, product_type,
+    def place_order(self, act_id, buy_or_sell, product_type,
                     exchange, tradingsymbol, quantity, discloseqty,
                     price_type, price=0.0, trigger_price=None,
                     retention='DAY', amo='NO', remarks=None, bookloss_price = 0.0, bookprofit_price = 0.0, trail_price = 0.0):
@@ -312,7 +312,7 @@ class NorenApi:
         #prepare the data
         values              = {'ordersource':'API'}
         values["uid"]       = self.__username
-        values["actid"]     = self.__accountid
+        values["actid"]     = act_id
         values["trantype"]  = buy_or_sell
         values["prd"]       = product_type
         values["exch"]      = exchange
