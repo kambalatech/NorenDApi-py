@@ -142,7 +142,7 @@ place an order to oms
 Example: 
 
 ```
-ret = api.place_order(act_id="TSTINV3",buy_or_sell='B', product_type='C',
+ret = api.place_order(act_id='TSTINV3',buy_or_sell='B', product_type='C',
                         exchange='NSE', tradingsymbol='CANBK-EQ', 
                         quantity=1, discloseqty=0,price_type='SL-LMT', price=200.00, trigger_price=199.50,
                         retention='DAY', remarks='my_order_001')
