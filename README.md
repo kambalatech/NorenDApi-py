@@ -136,13 +136,13 @@ Sample Failure Response :
 }
 
 
-#### <a name="md-place_order"></a> place_order(buy_or_sell, product_type,exchange, tradingsymbol, quantity, discloseqty, price_type, price=0.0, trigger_price=None, retention='DAY', amo='NO', remarks=None)
+#### <a name="md-place_order"></a> place_order(act_id, buy_or_sell, product_type,exchange, tradingsymbol, quantity, discloseqty, price_type, price=0.0, trigger_price=None, retention='DAY', amo='NO', remarks=None)
 place an order to oms
 
 Example: 
 
 ```
-ret = api.place_order(buy_or_sell='B', product_type='C',
+ret = api.place_order(act_id="TSTINV3",buy_or_sell='B', product_type='C',
                         exchange='NSE', tradingsymbol='CANBK-EQ', 
                         quantity=1, discloseqty=0,price_type='SL-LMT', price=200.00, trigger_price=199.50,
                         retention='DAY', remarks='my_order_001')
