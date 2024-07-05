@@ -79,6 +79,7 @@ if ret != None:
         if prompt1 == 'p':
             ret = api.place_order(act_id="TSTINV3", buy_or_sell='B', product_type='C',
                         exchange='NSE', tradingsymbol='INFY-EQ', 
+                        algo_id= 12345 ,naic_code=100,
                         quantity=1, discloseqty=0,price_type='LMT', price=1500.00, trigger_price=None,
                         retention='DAY', remarks='my_order_001')
             print(ret)
