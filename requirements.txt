@@ -1,4 +1,4 @@
-./dist/Api-0.0.2-py2.py3-none-any.whl
+./dist/Api-0.0.3-py2.py3-none-any.whl
 requests
 websocket_client
 pandas
