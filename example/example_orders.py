@@ -72,6 +72,7 @@ if ret != None:
         print('k => get positions')
         print('d => get daily mtm')
         print('s => start_websocket')
+        print('l => get limits')
         print('q => quit')
 
         prompt1=input('what shall we do? ').lower()        
@@ -120,6 +121,11 @@ if ret != None:
                 continue
             ret = api.start_websocket(order_update_callback=event_handler_order_update, subscribe_callback=event_handler_quote_update, socket_open_callback=open_callback)
             print(ret)
+        
+        elif prompt1 == 'l':            
+            ret = api.get_limits()
+            print(ret)
+
         else:
             print('Fin') #an answer that wouldn't be yes or no
             break
