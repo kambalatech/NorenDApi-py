@@ -32,6 +32,7 @@ Orders and Trades
 
 Holdings and Limits
 - [get_positions](#md-get_positions)
+- [get_limits](#md-get_limits)
 
 Example
 - [getting started](#md-example-basic)
@@ -699,6 +700,166 @@ Sample Failure Response :
     "emsg":"Error Occurred : 5 \"no data\""
 }
 
+#### <a name="md-get_limits"></a> get_limits
+retrieves the margin and limits set
+
+Request Details:
+
+| Python Parameters | Type | Optional |Description |
+| --- | --- | --- | ---|
+| product_type | ```string``` | True | retreives the delivery holdings or for a given product  |
+| segment | ```string``` | True | CM / FO / FX  |
+| exchange | ```string``` | True | Exchange NSE/BSE/MCX |
+
+the response is as follows,
+
+| Param | Type | Optional |Description |
+| --- | --- | --- | ---|
+|stat|Ok or Not_Ok| False |Limits request success or failure indication.|
+|actid| ```string``` | True |Account id|
+|prd| ```string``` | True |Product name|
+|seg| ```string``` | True |Segment CM / FO / FX |
+|exch| ```string``` | True |Exchange|
+|-------------------------Cash Primary Fields-------------------------------|
+|cash| ```string``` | True |Cash Margin available|
+|payin| ```string``` | True |Total Amount transferred using Payins today |
+|payout| ```string``` | True |Total amount requested for withdrawal today|
+|-------------------------Cash Additional Fields-------------------------------|
+|brkcollamt| ```string``` | True |Prevalued Collateral Amount|
+|unclearedcash| ```string``` | True |Uncleared Cash (Payin through cheques)|
+|daycash| ```string``` | True |Additional leverage amount / Amount added to handle system errors - by broker.  |
+|-------------------------Margin Utilized----------------------------------|
+|marginused| ```string``` | True |Total margin / fund used today|
+|mtomcurper| ```string``` | True |Mtom current percentage|
+|-------------------------Margin Used components---------------------|
+|cbu| ```string``` | True |CAC Buy used|
+|csc| ```string``` | True |CAC Sell Credits|
+|rpnl| ```string``` | True |Current realized PNL|
+|unmtom| ```string``` | True |Current unrealized mtom|
+|marprt| ```string``` | True |Covered Product margins|
+|span| ```string``` | True |Span used|
+|expo| ```string``` | True |Exposure margin|
+|premium| ```string``` | True |Premium used|
+|varelm| ```string``` | True |Var Elm Margin|
+|grexpo| ```string``` | True |Gross Exposure|
+|greexpo_d| ```string``` | True |Gross Exposure derivative|
+|scripbskmar| ```string``` | True |Scrip basket margin|
+|addscripbskmrg| ```string``` | True |Additional scrip basket margin|
+|brokerage| ```string``` | True |Brokerage amount|
+|collateral| ```string``` | True |Collateral calculated based on uploaded holdings|
+|grcoll| ```string``` | True |Valuation of uploaded holding pre haircut|
+|-------------------------Additional Risk Limits---------------------------|
+|turnoverlmt| ```string``` | True ||
+|pendordvallmt| ```string``` | True ||
+|-------------------------Additional Risk Indicators---------------------------|
+|turnover| ```string``` | True |Turnover|
+|pendordval| ```string``` | True |Pending Order value|
+|-------------------------Margin used detailed breakup fields-------------------------|
+|rzpnl_e_i| ```string``` | True |Current realized PNL (Equity Intraday)|
+|rzpnl_e_m| ```string``` | True |Current realized PNL (Equity Margin)|
+|rzpnl_e_c| ```string``` | True |Current realized PNL (Equity Cash n Carry)|
+|rzpnl_d_i| ```string``` | True |Current realized PNL (Derivative Intraday)|
+|rzpnl_d_m| ```string``` | True |Current realized PNL (Derivative Margin)|
+|rzpnl_f_i| ```string``` | True |Current realized PNL (FX Intraday)|
+|rzpnl_f_m| ```string``` | True |Current realized PNL (FX Margin)|
+|rzpnl_c_i| ```string``` | True |Current realized PNL (Commodity Intraday)|
+|rzpnl_c_m| ```string``` | True |Current realized PNL (Commodity Margin)|
+|uzpnl_e_i| ```string``` | True |Current unrealized MTOM (Equity Intraday)|
+|uzpnl_e_m| ```string``` | True |Current unrealized MTOM (Equity Margin)|
+|uzpnl_e_c| ```string``` | True |Current unrealized MTOM (Equity Cash n Carry)|
+|uzpnl_d_i| ```string``` | True |Current unrealized MTOM (Derivative Intraday)|
+|uzpnl_d_m| ```string``` | True |Current unrealized MTOM (Derivative Margin)|
+|uzpnl_f_i| ```string``` | True |Current unrealized MTOM (FX Intraday)|
+|uzpnl_f_m| ```string``` | True |Current unrealized MTOM (FX Margin)|
+|uzpnl_c_i| ```string``` | True |Current unrealized MTOM (Commodity Intraday)|
+|uzpnl_c_m| ```string``` | True |Current unrealized MTOM (Commodity Margin)|
+|span_d_i| ```string``` | True |Span Margin (Derivative Intraday)|
+|span_d_m| ```string``` | True |Span Margin (Derivative Margin)|
+|span_f_i| ```string``` | True |Span Margin (FX Intraday)|
+|span_f_m| ```string``` | True |Span Margin (FX Margin)|
+|span_c_i| ```string``` | True |Span Margin (Commodity Intraday)|
+|span_c_m| ```string``` | True |Span Margin (Commodity Margin)|
+|expo_d_i| ```string``` | True |Exposure Margin (Derivative Intraday)|
+|expo_d_m| ```string``` | True |Exposure Margin (Derivative Margin)|
+|expo_f_i| ```string``` | True |Exposure Margin (FX Intraday)|
+|expo_f_m| ```string``` | True |Exposure Margin (FX Margin)|
+|expo_c_i| ```string``` | True |Exposure Margin (Commodity Intraday)|
+|expo_c_m| ```string``` | True |Exposure Margin (Commodity Margin)|
+|premium_d_i| ```string``` | True |Option premium (Derivative Intraday)|
+|premium_d_m| ```string``` | True |Option premium (Derivative Margin)|
+|premium_f_i| ```string``` | True |Option premium (FX Intraday)|
+|premium_f_m| ```string``` | True |Option premium (FX Margin)|
+|premium_c_i| ```string``` | True |Option premium (Commodity Intraday)|
+|premium_c_m| ```string``` | True |Option premium (Commodity Margin)|
+|varelm_e_i| ```string``` | True |Var Elm (Equity Intraday)|
+|varelm_e_m| ```string``` | True |Var Elm (Equity Margin)|
+|varelm_e_c| ```string``` | True |Var Elm (Equity Cash n Carry)|
+|marprt_e_h| ```string``` | True |Covered Product margins (Equity High leverage)|
+|marprt_e_b| ```string``` | True |Covered Product margins (Equity Bracket Order)|
+|marprt_d_h| ```string``` | True |Covered Product margins (Derivative High leverage)|
+|marprt_d_b| ```string``` | True |Covered Product margins (Derivative Bracket Order)|
+|marprt_f_h| ```string``` | True |Covered Product margins (FX High leverage)|
+|marprt_f_b| ```string``` | True |Covered Product margins (FX Bracket Order)|
+|marprt_c_h| ```string``` | True |Covered Product margins (Commodity High leverage)|
+|marprt_c_b| ```string``` | True |Covered Product margins (Commodity Bracket Order)|
+|scripbskmar_e_i| ```string``` | True |Scrip basket margin (Equity Intraday)|
+|scripbskmar_e_m| ```string``` | True |Scrip basket margin (Equity Margin)|
+|scripbskmar_e_c| ```string``` | True |Scrip basket margin (Equity Cash n Carry)|
+|addscripbskmrg_d_i| ```string``` | True |Additional scrip basket margin (Derivative Intraday)|
+|addscripbskmrg_d_m| ```string``` | True |Additional scrip basket margin (Derivative Margin)|
+|addscripbskmrg_f_i| ```string``` | True |Additional scrip basket margin (FX Intraday)|
+|addscripbskmrg_f_m| ```string``` | True |Additional scrip basket margin (FX Margin)|
+|addscripbskmrg_c_i| ```string``` | True |Additional scrip basket margin (Commodity Intraday)|
+|addscripbskmrg_c_m| ```string``` | True |Additional scrip basket margin (Commodity Margin)|
+|brkage_e_i| ```string``` | True |Brokerage (Equity Intraday)|
+|brkage_e_m| ```string``` | True |Brokerage (Equity Margin)|
+|brkage_e_c| ```string``` | True |Brokerage (Equity CAC)|
+|brkage_e_h| ```string``` | True |Brokerage (Equity High Leverage)|
+|brkage_e_b| ```string``` | True |Brokerage (Equity Bracket Order)|
+|brkage_d_i| ```string``` | True |Brokerage (Derivative Intraday)|
+|brkage_d_m| ```string``` | True |Brokerage (Derivative Margin)|
+|brkage_d_h| ```string``` | True |Brokerage (Derivative High Leverage)|
+|brkage_d_b| ```string``` | True |Brokerage (Derivative Bracket Order)|
+|brkage_f_i| ```string``` | True |Brokerage (FX Intraday)|
+|brkage_f_m| ```string``` | True |Brokerage (FX Margin)|
+|brkage_f_h| ```string``` | True |Brokerage (FX High Leverage)|
+|brkage_f_b| ```string``` | True |Brokerage (FX Bracket Order)|
+|brkage_c_i| ```string``` | True |Brokerage (Commodity Intraday)|
+|brkage_c_m| ```string``` | True |Brokerage (Commodity Margin)|
+|brkage_c_h| ```string``` | True |Brokerage (Commodity High Leverage)|
+|brkage_c_b| ```string``` | True |Brokerage (Commodity Bracket Order)|
+|peak_mar| ```string``` | True |Peak margin used by the client|
+|request_time| ```string``` | True |This will be present only in a successful response.|
+|emsg| ```string``` | True |This will be present only in a failure response.|
+
+Sample Success Response :
+{
+    "request_time":"18:07:31 29-05-2020",
+"stat":"Ok",
+"cash":"1500000000000000.00",
+"payin":"0.00",
+"payout":"0.00",
+"brkcollamt":"0.00",
+"unclearedcash":"0.00",
+"daycash":"0.00",
+"turnoverlmt":"50000000000000.00",
+"pendordvallmt":"2000000000000000.00",
+"turnover":"3915000.00",
+"pendordval":"2871000.00",
+"marginused":"3945540.00",
+"mtomcurper":"0.00",
+"urmtom":"30540.00",
+"grexpo":"3915000.00",
+"uzpnl_e_i":"15270.00",
+"uzpnl_e_m":"61080.00",
+"uzpnl_e_c":"-45810.00"
+}
+
+Sample Failure Response :
+{
+   "stat":"Not_Ok",
+   "emsg":"Server Timeout :  "
+}
 
 #### <a name="md-get_security_info"></a> get_security_info(exchange, token):
 gets the complete details and its properties 
